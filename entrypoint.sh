@@ -2,14 +2,24 @@
 
 set -e
 
+# FILE_FILTER is a regex to match files against. For example, to validate only .c and .h files
+# set it to:
+#     ".*\.(c|h)$"
+# By default we match everything
+if [ -z $FILE_FILTER ]; then
+  export FILE_FILTER=".*"
+fi
+
 tw_lines=""  # Lines containing trailing whitespaces.
 
 # TODO (harupy): Check only changed files.
 for file in $(git ls-files | sed -e 's/^/.\//')
 do
-  lines=$(egrep -rnIH " +$" $file | cut -f-2 -d ":")
-  if [ ! -z "$lines" ]; then
-    tw_lines+=$([[ -z "$tw_lines" ]] && echo "$lines" || echo $'\n'"$lines")
+  if [[ "$file" =~ $FILE_FILTER ]]; then
+    lines=$(egrep -rnIH " +$" $file | cut -f-2 -d ":")
+    if [ ! -z "$lines" ]; then
+      tw_lines+=$([[ -z "$tw_lines" ]] && echo "$lines" || echo $'\n'"$lines")
+    fi
   fi
 done
 
