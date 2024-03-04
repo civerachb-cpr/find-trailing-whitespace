@@ -58,5 +58,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: civerachb-cpr/find-trailing-whitespace@master
         env:
-          FILE_FILTER: "*.\.(c|h)$"
+          FILE_FILTER: "*.\\.(c|h)$"
 ```
